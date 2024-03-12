@@ -67,7 +67,7 @@ const filterSubmissions = (req, res, next) => {
   }
   let submissions = req.submissions.responses;
 
-  const filters = req.query.filters || [];
+  let filters = req.query.filters || [];
   if (!filters.length) {
     next();
   }
