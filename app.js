@@ -1,6 +1,12 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
+
+const base = "https://api.fillout.com/v1/api/forms";
 const port = process.env.PORT || 3001;
+const api_key = process.env.API_KEY;
+const form_id = process.env.FORM_ID;
 
 app.get("/", (req, res) => res.type('html').send(html));
 
