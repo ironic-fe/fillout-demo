@@ -1,15 +1,15 @@
-# README
+# Fillout Demo
 
-This is the [Express](https://expressjs.com) [Hello world](https://expressjs.com/en/starter/hello-world.html) example on [Render](https://render.com).
+Fillout Demo that extends the Fillout REST API with a new `filters` parameter.
 
-The app in this repo is deployed at [https://express.onrender.com](https://express.onrender.com).
+## Hosting 
+
+The app in this repo is deployed at [https://fillout-demo-rlav.onrender.com](https://fillout-demo-rlav.onrender.com).
 
 ## Deployment
+  - Build Command: `yarn`
+  - Start Command: `node app.js`
 
-See https://render.com/docs/deploy-node-express-app or follow the steps below:
+## Source
 
-Create a new web service with the following values:
-  * Build Command: `yarn`
-  * Start Command: `node app.js`
-
-That's it! Your web service will be live on your Render URL as soon as the build finishes.
+This is fork of the [Express](https://expressjs.com) [Hello world](https://expressjs.com/en/starter/hello-world.html) example on [Render](https://render.com).
