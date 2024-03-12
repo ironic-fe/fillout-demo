@@ -9,11 +9,15 @@ const api_key = process.env.API_KEY;
 const form_id = process.env.FORM_ID;
 
 const forwardRequest = async (req, res, next) => {
-  const response = await fetch(`${base}/${form_id}/submissions`, {
-    headers: {
-      Authorization: `Bearer ${api_key}`,
-    },
-  });
+  queryParams = new URLSearchParams(req.query);
+  const response = await fetch(
+    `${base}/${form_id}/submissions?${queryParams.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${api_key}`,
+      },
+    }
+  );
   const submissions = await response.json();
 
   req.submissions = submissions;
