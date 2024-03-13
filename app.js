@@ -11,6 +11,9 @@ const conditions = ["equals", "does_not_equal", "greater_than", "less_than"];
 
 const forwardRequest = async (req, res, next) => {
   queryParams = new URLSearchParams(req.query);
+  // Apply offset and limit after filtering results.
+  queryParams.delete("offset");
+  queryParams.delete("limit");
   const response = await fetch(
     `${base}/${form_id}/submissions?${queryParams.toString()}`,
     {
@@ -20,8 +23,8 @@ const forwardRequest = async (req, res, next) => {
     }
   );
   const submissions = await response.json();
-
   req.submissions = submissions;
+
   next();
 };
 
@@ -52,10 +55,8 @@ const runFilter = (submissions, filter) => {
       case "does_not_equal":
         return source.value != filter.value;
       case "greater_than":
-        // @todo handle numeric values.
         return source.value > filter.value;
       case "less_than":
-        // @todo handle numeric values.
         return source.value < filter.value;
     }
   });
@@ -68,18 +69,31 @@ const filterSubmissions = (req, res, next) => {
   let submissions = req.submissions.responses;
 
   let filters = req.query.filters || [];
-  if (!filters.length) {
-    next();
-  }
-  // Catch single filters passed as a string and wrap in an array.
-  if (!Array.isArray(filters)) {
-    filters = [filters];
+  if (filters.length) {
+    // Catch single filters passed as a string and wrap in an array.
+    if (!Array.isArray(filters)) {
+      filters = [filters];
+    }
+    filters.forEach((filterString) => {
+      filter = JSON.parse(filterString);
+      submissions = runFilter(submissions, filter);
+    });
   }
 
-  filters.forEach((filterString) => {
-    filter = JSON.parse(filterString);
-    submissions = runFilter(submissions, filter);
-  });
+  // Apply offset and limit.
+  queryParams = new URLSearchParams(req.query);
+  if (queryParams.has("offset")) {
+    let offset = parseInt(queryParams.get("offset"));
+    if (!isNaN(offset) && offset > 0) {
+      submissions = submissions.slice(offset);
+    }
+  }
+  if (queryParams.has("limit")) {
+    let limit = parseInt(queryParams.get("limit"));
+    if (!isNaN(limit) && limit >= 0) {
+      submissions = submissions.slice(0, limit);
+    }
+  }
 
   // Update submissions.
   req.submissions.responses = submissions;
